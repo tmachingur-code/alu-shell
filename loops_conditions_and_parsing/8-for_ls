@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# This script displays the contents of the current directory after the first dash
+
+shopt -s nullglob
+
+for file in *
+do
+    echo "${file#*-}"
+done
