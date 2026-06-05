@@ -1,10 +1,21 @@
 #!/usr/bin/env bash
-# This script creates a PID file and handles signals while running indefinitely
+# This script creates a PID file and handles signals properly
 
 echo $$ > /var/run/myscript.pid
 
-trap 'echo "Y U no love me?!"; rm -f /var/run/myscript.pid; exit' SIGINT
-trap 'echo "I hate the kill command"; rm -f /var/run/myscript.pid; exit' SIGTERM SIGQUIT
+sigterm_handler() {
+    echo "I hate the kill command"
+    rm -f /var/run/myscript.pid
+    exit
+}
+
+sigquit_handler() {
+    rm -f /var/run/myscript.pid
+    exit
+}
+
+trap sigterm_handler SIGTERM
+trap sigquit_handler SIGQUIT
 
 while true
 do
