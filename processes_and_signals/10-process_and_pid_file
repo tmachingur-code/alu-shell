@@ -1,10 +1,30 @@
 #!/usr/bin/env bash
-# This script creates a PID file and handles signals correctly
+# This script creates a PID file and handles SIGINT, SIGTERM, and SIGQUIT signals
 
 echo $$ > /var/run/myscript.pid
 
-trap 'echo "I hate the kill command"; rm -f /var/run/myscript.pid; exit' SIGTERM
-trap 'rm -f /var/run/myscript.pid; exit' SIGQUIT
+cleanup() {
+    rm -f /var/run/myscript.pid
+    exit
+}
+
+sigint_handler() {
+    echo "Y U no love me?!"
+    cleanup
+}
+
+sigterm_handler() {
+    echo "I hate the kill command"
+    cleanup
+}
+
+sigquit_handler() {
+    cleanup
+}
+
+trap sigint_handler SIGINT
+trap sigterm_handler SIGTERM
+trap sigquit_handler SIGQUIT
 
 while true
 do
